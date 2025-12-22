@@ -89,6 +89,7 @@ input,select{
 
 <div class="container">
 
+<!-- HOME -->
 <div id="home">
   <div class="card">
     <h3>
@@ -107,6 +108,7 @@ input,select{
   </div>
 </div>
 
+<!-- INVITE -->
 <div id="invite" class="hidden">
   <div class="card">
     <h3>
@@ -119,6 +121,7 @@ input,select{
   </div>
 </div>
 
+<!-- WITHDRAW -->
 <div id="withdraw" class="hidden">
   <div class="card">
     <h3>
@@ -142,6 +145,7 @@ input,select{
   </div>
 </div>
 
+<!-- PROFILE -->
 <div id="profile" class="hidden">
   <div class="card">
     <h3>
@@ -156,6 +160,7 @@ input,select{
 
 </div>
 
+<!-- NAV -->
 <div class="nav">
   <button class="active" onclick="openPage('home',this)">
     <img src="https://cdn-icons-png.flaticon.com/512/942/942748.png">
@@ -220,11 +225,9 @@ if(walletNumber){
  pwallet.innerText=walletNumber;
 }
 
+/* 🔥 GUARANTEED AD OPEN */
 function watchAd(){
  if(watched>=200) return alert("Daily limit reached");
-
- // 👉 Ad open in Telegram / in-app browser
- window.open("https://otieu.com/4/10362481","_blank");
 
  watched++;
  balance+=0.30;
@@ -235,6 +238,9 @@ function watchAd(){
  balanceEl.innerText=balance.toFixed(2);
  watchedEl.innerText=watched;
  bar.style.width=(watched/200*100)+"%";
+
+ // ✅ Telegram / WebView safe redirect
+ location.href="https://otieu.com/4/10362481";
 }
 
 function withdraw(){
@@ -271,4 +277,3 @@ function copyRef(){
 
 </body>
 </html>
-
