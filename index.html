@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,33 +8,81 @@
 
 <style>
 *{box-sizing:border-box;font-family:Poppins,Arial;}
-body{margin:0;background:#0b0225;color:#fff}
-.container{padding:15px;padding-bottom:120px}
+body{
+  margin:0;
+  background:linear-gradient(180deg,#07001a,#120035,#07001a);
+  color:#fff;
+}
+.container{padding:15px;padding-bottom:120px;}
 .card{
- background:linear-gradient(135deg,#1b0b46,#2f1674);
- border-radius:18px;
- padding:16px;
- margin-bottom:16px;
+  background:linear-gradient(135deg,#1b0b46,#2f1674);
+  border-radius:18px;
+  padding:16px;
+  margin-bottom:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,.6);
 }
+h3{
+  margin:0 0 10px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.icon3d{width:32px;height:32px;}
+.green{color:#22f5a5;}
 .btn{
- width:100%;
- padding:14px;
- border:none;
- border-radius:16px;
- background:#7f5cff;
- color:#fff;
- font-size:16px;
- font-weight:bold;
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:16px;
+  background:linear-gradient(90deg,#7f5cff,#a855f7);
+  color:#fff;
+  font-size:16px;
+  font-weight:bold;
 }
-.progress{height:8px;background:#2c1a5e;border-radius:10px}
-.progress span{display:block;height:100%;width:0;background:#00ffa3}
-.hidden{display:none}
+.progress{
+  width:100%;
+  height:8px;
+  background:#2c1a5e;
+  border-radius:10px;
+  overflow:hidden;
+  margin-top:6px;
+}
+.progress span{
+  display:block;
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#00ffa3,#00c3ff);
+}
+.hidden{display:none;}
+
 .nav{
- position:fixed;bottom:0;left:0;right:0;
- display:flex;background:#0c0620
+  position:fixed;
+  bottom:0;left:0;right:0;
+  display:flex;
+  background:#0c0620;
+  border-top:1px solid #2c1a5e;
 }
-.nav button{flex:1;background:none;border:none;color:#aaa}
-.nav .active{color:#7f5cff}
+.nav button{
+  flex:1;
+  padding:8px 0;
+  border:none;
+  background:none;
+  color:#aaa;
+  font-size:12px;
+}
+.nav button img{
+  width:34px;
+  display:block;
+  margin:0 auto 4px;
+}
+.nav .active{color:#7f5cff;}
+
+input,select{
+  width:100%;
+  padding:12px;
+  border-radius:12px;
+  border:none;
+}
 </style>
 </head>
 
@@ -41,51 +90,196 @@ body{margin:0;background:#0b0225;color:#fff}
 
 <div class="container">
 
+<!-- HOME -->
 <div id="home">
- <div class="card">
-  <p>ID: <b id="uid"></b></p>
-  <p>Balance: ৳ <b id="balance">0</b></p>
-  <p>Ads: <span id="watched">0</span>/200</p>
-  <div class="progress"><span id="bar"></span></div>
- </div>
+  <div class="card">
+    <h3>
+      <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/942/942748.png">
+      Task
+    </h3>
+    <p>ID: <b id="uid"></b></p>
+    <p>Balance: ৳ <b class="green" id="balance">0</b></p>
+    <p>Daily Ads: <b><span id="watched">0</span>/200</b></p>
+    <p style="font-size:12px;opacity:.7;">6AM TO 6AM</p>
+    <div class="progress"><span id="bar"></span></div>
+  </div>
 
- <div class="card">
-  <button class="btn" onclick="watchAd()">▶ Watch Ad & Earn ৳0.30</button>
- </div>
+  <div class="card">
+    <button class="btn" onclick="watchAd()">▶ Watch Ad & Earn ৳0.30</button>
+  </div>
+</div>
+
+<!-- INVITE -->
+<div id="invite" class="hidden">
+  <div class="card">
+    <h3>
+      <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/833/833472.png">
+      Invite
+    </h3>
+    <input id="refLink" readonly>
+    <br><br>
+    <button class="btn" onclick="copyRef()">Copy Referral Link</button>
+  </div>
+</div>
+
+<!-- WITHDRAW -->
+<div id="withdraw" class="hidden">
+  <div class="card">
+    <h3>
+      <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/1170/1170576.png">
+      Withdraw
+    </h3>
+
+    <input id="wallet" type="number" placeholder="Enter Wallet Number">
+    <br><br>
+
+    <input id="amount" type="number" placeholder="Enter amount">
+    <br><br>
+
+    <select>
+      <option>Bkash</option>
+      <option>Nagad</option>
+    </select>
+    <br><br>
+
+    <button class="btn" onclick="withdraw()">Submit Withdraw</button>
+  </div>
+</div>
+
+<!-- PROFILE -->
+<div id="profile" class="hidden">
+  <div class="card">
+    <h3>
+      <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png">
+      Profile
+    </h3>
+    <p>User ID: <b id="pid"></b></p>
+    <p>Balance: ৳ <b class="green" id="pbalance"></b></p>
+    <p>Wallet: <b id="pwallet">Not Set</b></p>
+  </div>
 </div>
 
 </div>
 
+<!-- NAV -->
 <div class="nav">
- <button class="active">TASK</button>
+  <button class="active" onclick="openPage('home',this)">
+    <img src="https://cdn-icons-png.flaticon.com/512/942/942748.png">
+    TASK
+  </button>
+  <button onclick="openPage('invite',this)">
+    <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png">
+    INVITE
+  </button>
+  <button onclick="openPage('withdraw',this)">
+    <img src="https://cdn-icons-png.flaticon.com/512/1170/1170576.png">
+    WITHDRAW
+  </button>
+  <button onclick="openPage('profile',this)">
+    <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png">
+    PROFILE
+  </button>
 </div>
 
 <script>
-let uid=localStorage.getItem("uid")||Math.floor(Math.random()*1e9);
+const uidEl=document.getElementById("uid");
+const balanceEl=document.getElementById("balance");
+const watchedEl=document.getElementById("watched");
+const bar=document.getElementById("bar");
+const refLink=document.getElementById("refLink");
+const walletInput=document.getElementById("wallet");
+const pwallet=document.getElementById("pwallet");
+
+let uid=localStorage.getItem("uid")||Math.floor(100000000+Math.random()*900000000);
 localStorage.setItem("uid",uid);
 
 let balance=Number(localStorage.getItem("balance"))||0;
 let watched=Number(localStorage.getItem("watched"))||0;
+let walletNumber=localStorage.getItem("walletNumber")||"";
+
+function getToday6AM(){
+ const now=new Date();
+ const six=new Date();
+ six.setHours(6,0,0,0);
+ if(now<six) six.setDate(six.getDate()-1);
+ return six.getTime();
+}
+
+let lastReset=localStorage.getItem("lastReset");
+let today6AM=getToday6AM();
+if(!lastReset||Number(lastReset)<today6AM){
+ watched=0;
+ localStorage.setItem("watched",0);
+ localStorage.setItem("lastReset",today6AM);
+}
 
 uidEl.innerText=uid;
 balanceEl.innerText=balance.toFixed(2);
 watchedEl.innerText=watched;
 bar.style.width=(watched/200*100)+"%";
+refLink.value=location.href.split("?")[0]+"?ref="+uid;
 
+document.getElementById("pid").innerText=uid;
+document.getElementById("pbalance").innerText=balance.toFixed(2);
+if(walletNumber){
+ walletInput.value=walletNumber;
+ pwallet.innerText=walletNumber;
+}
+
+/* 🔥 AD FUNCTION */
 function watchAd(){
  if(watched>=200) return alert("Daily limit reached");
+
+ // 👉 libtl AD CALL
+ if(typeof show_10362750 === "function"){
+   show_10362750();
+ }
 
  watched++;
  balance+=0.30;
 
+ localStorage.setItem("balance",balance);
  localStorage.setItem("watched",watched);
+
+ balanceEl.innerText=balance.toFixed(2);
+ watchedEl.innerText=watched;
+ bar.style.width=(watched/200*100)+"%";
+}
+
+function withdraw(){
+ let amt=Number(amount.value);
+ let wallet=walletInput.value.trim();
+
+ if(!wallet||wallet.length<10) return alert("Enter valid wallet number");
+ if(amt<300||amt>balance) return alert("Invalid amount");
+
+ localStorage.setItem("walletNumber",wallet);
+ balance-=amt;
  localStorage.setItem("balance",balance);
 
- // 👉 Telegram-safe redirect page
- location.href="ad.html";
+ balanceEl.innerText=balance.toFixed(2);
+ document.getElementById("pbalance").innerText=balance.toFixed(2);
+ pwallet.innerText=wallet;
+
+ alert("Withdraw request sent");
+}
+
+function openPage(id,btn){
+ document.querySelectorAll(".container>div").forEach(d=>d.classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+ document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
+ btn.classList.add("active");
+}
+
+function copyRef(){
+ refLink.select();
+ document.execCommand("copy");
+ alert("Copied");
 }
 </script>
 
+<!-- 🔥 libtl AD SDK (body শেষের আগে) -->
+<script src='//libtl.com/sdk.js' data-zone='10362750' data-sdk='show_10362750'></script>
+
 </body>
 </html>
-
