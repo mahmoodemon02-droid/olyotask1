@@ -89,7 +89,6 @@ input,select{
 
 <div class="container">
 
-<!-- TASK -->
 <div id="home">
   <div class="card">
     <h3>
@@ -106,19 +105,8 @@ input,select{
   <div class="card">
     <button class="btn" onclick="watchAd()">▶ Watch Ad & Earn ৳0.30</button>
   </div>
-
-  <div class="card">
-    <h3>
-      <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/1055/1055646.png">
-      Daily Task (05)
-    </h3>
-    <p>Follow / Like / Subscribe / Join</p>
-    <p>Reward: <b class="green">৳0.10</b></p>
-    <button class="btn">GO</button>
-  </div>
 </div>
 
-<!-- INVITE -->
 <div id="invite" class="hidden">
   <div class="card">
     <h3>
@@ -131,7 +119,6 @@ input,select{
   </div>
 </div>
 
-<!-- WITHDRAW -->
 <div id="withdraw" class="hidden">
   <div class="card">
     <h3>
@@ -155,7 +142,6 @@ input,select{
   </div>
 </div>
 
-<!-- PROFILE -->
 <div id="profile" class="hidden">
   <div class="card">
     <h3>
@@ -170,7 +156,6 @@ input,select{
 
 </div>
 
-<!-- NAV -->
 <div class="nav">
   <button class="active" onclick="openPage('home',this)">
     <img src="https://cdn-icons-png.flaticon.com/512/942/942748.png">
@@ -237,10 +222,16 @@ if(walletNumber){
 
 function watchAd(){
  if(watched>=200) return alert("Daily limit reached");
+
+ // 👉 Ad open in Telegram / in-app browser
+ window.open("https://otieu.com/4/10362481","_blank");
+
  watched++;
  balance+=0.30;
+
  localStorage.setItem("balance",balance);
  localStorage.setItem("watched",watched);
+
  balanceEl.innerText=balance.toFixed(2);
  watchedEl.innerText=watched;
  bar.style.width=(watched/200*100)+"%";
@@ -272,7 +263,8 @@ function openPage(id,btn){
 }
 
 function copyRef(){
- refLink.select();document.execCommand("copy");
+ refLink.select();
+ document.execCommand("copy");
  alert("Copied");
 }
 </script>
