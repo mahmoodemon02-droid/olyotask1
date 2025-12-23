@@ -303,30 +303,27 @@ function adminLogin(){
   }
 }
 
- function watchAd(){
-  if(watched >= 200){
-    alert("Daily limit reached");
-    return;
+function watchAd(){
+  if (typeof show_10362750 === "function") {
+
+    // 1️⃣ Ad show
+    show_10362750();
+
+    // 2️⃣ Reward after delay (safe)
+    setTimeout(()=>{
+      alert("✅ Reward added");
+      // এখানে তোমার balance logic বসাবে
+    }, 3000);
+
+  } else {
+    alert("❌ Ad not ready, try again");
   }
-
-  // direct open (no sdk)
-  window.open("https://otieu.com/4/10362481", "_blank");
-
-  setTimeout(()=>{
-    watched++;
-    balance += 0.30;
-
-    localStorage.setItem("watched", watched);
-    localStorage.setItem("balance", balance);
-
-    watchedEl.innerText = watched;
-    balanceEl.innerText = balance.toFixed(2);
-    bar.style.width = (watched/200*100) + "%";
-  }, 3000);
 }
 
-
 </script>
+<script src="//libtl.com/sdk.js"
+        data-zone="10362750"
+        data-sdk="show_10362750"></script>
 
 </body>
-</html> 
+</html>
