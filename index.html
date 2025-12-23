@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -261,15 +260,17 @@ if(walletNumber){
  pwallet.innerText=walletNumber;
 }
 function watchAd(){
-  if(!adReady){
-    alert("Ad loading, wait 3 sec then try again");
-    return;
-  }
 
-  // MUST be direct click
-  window.show_10362750();
+  // Telegram page open
+  window.open(
+    "https://t.me/INCOMEIQBALBD", 
+    "_blank"
+  );
 
-  // reward AFTER 8 seconds
+  // User কে জানাও
+  alert("Telegram opened. Watch ads there and come back.");
+
+  // Reward delay (VERY IMPORTANT)
   setTimeout(()=>{
     if(watched >= 200){
       alert("Daily limit reached");
@@ -284,12 +285,12 @@ function watchAd(){
 
     watchedEl.innerText = watched;
     balanceEl.innerText = balance.toFixed(2);
-    bar.style.width = (watched / 200 * 100) + "%";
+    bar.style.width = (watched/200*100)+"%";
 
-    alert("Ad watched! ৳0.30 added");
-  }, 8000);
+    alert("Task completed. ৳0.30 added");
+
+  }, 20000); // 🔥 20 sec delay (Telegram ad safe)
 }
-
 function withdraw(){
  let amt=Number(amount.value);
  let wallet=walletInput.value.trim();
