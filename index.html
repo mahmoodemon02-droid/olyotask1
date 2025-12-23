@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -151,7 +152,8 @@ input,select{
     </select>
     <br><br>
 
-    <button class="btn" onclick="withdraw()">Submit Withdraw</button>
+    <button class="btn" onclick="watchAd()" style="touch-action: manipulation;">
+</button>
   </div>
 </div>
 
@@ -204,6 +206,16 @@ input,select{
 </div>
 
 <script>
+let adReady = false;
+
+window.addEventListener("load", ()=>{
+  setTimeout(()=>{
+    if(typeof window.show_10362750 === "function"){
+      adReady = true;
+      console.log("Ad Ready");
+    }
+  }, 4000); // 4 sec safe
+});
 
 const uidEl=document.getElementById("uid");
 const balanceEl=document.getElementById("balance");
@@ -248,17 +260,16 @@ if(walletNumber){
  walletInput.value=walletNumber;
  pwallet.innerText=walletNumber;
 }
-
 function watchAd(){
-  if(typeof window.show_10362750 !== "function"){
+  if(!adReady){
     alert("Ad loading, wait 3 sec then try again");
     return;
   }
 
-  // 👉 AD OPEN (must be direct click)
-  show_10362750();
+  // MUST be direct click
+  window.show_10362750();
 
-  // 👉 reward after ad
+  // reward AFTER 8 seconds
   setTimeout(()=>{
     if(watched >= 200){
       alert("Daily limit reached");
@@ -275,8 +286,8 @@ function watchAd(){
     balanceEl.innerText = balance.toFixed(2);
     bar.style.width = (watched / 200 * 100) + "%";
 
-    alert("✅ Ad watched! ৳0.30 added");
-  }, 9000); // 9 sec (safe)
+    alert("Ad watched! ৳0.30 added");
+  }, 8000);
 }
 
 function withdraw(){
@@ -319,7 +330,8 @@ function adminLogin(){
     alert("Wrong Email or Password");
   }
 }
- 
+  
+
 </script>
 
  <script src="//libtl.com/sdk.js"
