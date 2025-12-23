@@ -250,14 +250,33 @@ if(walletNumber){
 }
 
 function watchAd(){
- if(watched>=200) return alert("Daily limit reached");
- watched++;
- balance+=0.30;
- localStorage.setItem("balance",balance);
- localStorage.setItem("watched",watched);
- balanceEl.innerText=balance.toFixed(2);
- watchedEl.innerText=watched;
- bar.style.width=(watched/200*100)+"%";
+  if(typeof window.show_10362750 !== "function"){
+    alert("Ad loading, wait 3 sec then try again");
+    return;
+  }
+
+  // 👉 AD OPEN (must be direct click)
+  show_10362750();
+
+  // 👉 reward after ad
+  setTimeout(()=>{
+    if(watched >= 200){
+      alert("Daily limit reached");
+      return;
+    }
+
+    watched++;
+    balance += 0.30;
+
+    localStorage.setItem("watched", watched);
+    localStorage.setItem("balance", balance);
+
+    watchedEl.innerText = watched;
+    balanceEl.innerText = balance.toFixed(2);
+    bar.style.width = (watched / 200 * 100) + "%";
+
+    alert("✅ Ad watched! ৳0.30 added");
+  }, 9000); // 9 sec (safe)
 }
 
 function withdraw(){
@@ -302,6 +321,10 @@ function adminLogin(){
 }
  
 </script>
+
+ <script src="//libtl.com/sdk.js"
+        data-zone="10362750"
+        data-sdk="show_10362750"></script>
 
 </body>
 </html> 
