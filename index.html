@@ -207,13 +207,14 @@ input,select{
 <script>
 let adReady = false;
 
-window.addEventListener("load", ()=>{
-  setTimeout(()=>{
-    if(typeof window.show_10362750 === "function"){
+window.addEventListener("load", () => {
+  let check = setInterval(() => {
+    if (typeof window.show_10362750 === "function") {
       adReady = true;
-      console.log("Ad Ready");
+      clearInterval(check);
+      console.log("Monetag Ready");
     }
-  }, 4000); // 4 sec safe
+  }, 500);
 });
 
 const uidEl=document.getElementById("uid");
@@ -301,20 +302,20 @@ function adminLogin(){
     alert("Wrong Email or Password");
   }
 }
- 
+
 function watchAd(){
   if(watched >= 200){
     alert("Daily limit reached");
     return;
   }
 
-  if(typeof window.show_10362750 === "function"){
-    window.show_10362750(); // Monetag ad open
-  }else{
-    alert("Ad not ready, try again");
-    return;
-  }
+  // 🔥 Monetag Direct Link (Telegram Safe)
+  window.open(
+    "https://otieu.com/4/10362481",
+    "_blank"
+  );
 
+  // reward after ad open
   setTimeout(()=>{
     watched++;
     balance += 0.30;
@@ -326,14 +327,10 @@ function watchAd(){
     balanceEl.innerText = balance.toFixed(2);
     document.getElementById("pbalance").innerText = balance.toFixed(2);
     bar.style.width = (watched/200*100) + "%";
-  }, 3000);
+  }, 5000); // 5 sec
 }
 
 </script>
-
- <script src="//libtl.com/sdk.js"
-        data-zone="10362750"
-        data-sdk="show_10362750"></script>
 
 </body>
 </html> 
