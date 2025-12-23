@@ -303,19 +303,15 @@ function adminLogin(){
   }
 }
 
-function watchAd(){
+ function watchAd(){
   if(watched >= 200){
     alert("Daily limit reached");
     return;
   }
 
-  // 🔥 Monetag Direct Link (Telegram Safe)
-  window.open(
-    "https://otieu.com/4/10362481",
-    "_blank"
-  );
+  // direct open (no sdk)
+  window.open("https://otieu.com/4/10362481", "_blank");
 
-  // reward after ad open
   setTimeout(()=>{
     watched++;
     balance += 0.30;
@@ -325,10 +321,10 @@ function watchAd(){
 
     watchedEl.innerText = watched;
     balanceEl.innerText = balance.toFixed(2);
-    document.getElementById("pbalance").innerText = balance.toFixed(2);
     bar.style.width = (watched/200*100) + "%";
-  }, 5000); // 5 sec
+  }, 3000);
 }
+
 
 </script>
 
