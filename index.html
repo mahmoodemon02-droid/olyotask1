@@ -260,37 +260,14 @@ if(walletNumber){
  pwallet.innerText=walletNumber;
 }
 function watchAd(){
-
-  // Telegram page open
+  // Telegram WebView + Monetag
   window.open(
-    "https://t.me/INCOMEIQBALBD", 
+    "https://t.me/iv?url=https://otieu.com/4/10362750",
     "_blank"
   );
-
-  // User কে জানাও
-  alert("Telegram opened. Watch ads there and come back.");
-
-  // Reward delay (VERY IMPORTANT)
-  setTimeout(()=>{
-    if(watched >= 200){
-      alert("Daily limit reached");
-      return;
-    }
-
-    watched++;
-    balance += 0.30;
-
-    localStorage.setItem("watched", watched);
-    localStorage.setItem("balance", balance);
-
-    watchedEl.innerText = watched;
-    balanceEl.innerText = balance.toFixed(2);
-    bar.style.width = (watched/200*100)+"%";
-
-    alert("Task completed. ৳0.30 added");
-
-  }, 20000); // 🔥 20 sec delay (Telegram ad safe)
 }
+
+
 function withdraw(){
  let amt=Number(amount.value);
  let wallet=walletInput.value.trim();
