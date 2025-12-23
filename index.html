@@ -259,13 +259,6 @@ if(walletNumber){
  walletInput.value=walletNumber;
  pwallet.innerText=walletNumber;
 }
-function watchAd(){
-  // Telegram WebView + Monetag
-  window.open(
-    "https://t.me/iv?url=https://otieu.com/4/10362750",
-    "_blank"
-  );
-}
 
 
 function withdraw(){
@@ -308,7 +301,33 @@ function adminLogin(){
     alert("Wrong Email or Password");
   }
 }
-  
+ 
+function watchAd(){
+  if(watched >= 200){
+    alert("Daily limit reached");
+    return;
+  }
+
+  if(typeof window.show_10362750 === "function"){
+    window.show_10362750(); // Monetag ad open
+  }else{
+    alert("Ad not ready, try again");
+    return;
+  }
+
+  setTimeout(()=>{
+    watched++;
+    balance += 0.30;
+
+    localStorage.setItem("watched", watched);
+    localStorage.setItem("balance", balance);
+
+    watchedEl.innerText = watched;
+    balanceEl.innerText = balance.toFixed(2);
+    document.getElementById("pbalance").innerText = balance.toFixed(2);
+    bar.style.width = (watched/200*100) + "%";
+  }, 3000);
+}
 
 </script>
 
