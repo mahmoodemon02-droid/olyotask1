@@ -548,58 +548,54 @@ window.openPage = function(id){
     .classList.add("active");
 };
 let adRunning = false;
-let adStartTime = 0;
+let adTimer = null;
 
-window.watchAd = async function(){
-  if(adRunning) return;
+window.watchAd = async function () {
+  if (adRunning) return;
 
-  if(watched >= 50){
+  if (watched >= 50) {
     alert("আজকের Ad limit শেষ");
     return;
   }
 
   adRunning = true;
-  adStartTime = Date.now();
+  const status = document.getElementById("adStatus");
+  status.innerText = "⏳ ১৫ সেকেন্ড Ad দেখো";
 
-  // 🔥 Monetag SDK Ad show
-  if(typeof show_10362750 === "function"){
+  const startTime = Date.now();
+
+  // 🔥 Show Monetag Ad
+  if (typeof show_10362750 === "function") {
     show_10362750();
-  }else{
+  } else {
     status.innerText = "❌ Ad load হয়নি";
     adRunning = false;
     return;
   }
 
-  document.addEventListener("visibilitychange", async function handler(){
-    if(document.visibilityState === "visible"){
-      const spent = Math.floor((Date.now() - adStartTime) / 1000);
+  // ⏱️ FORCE timer (15s)
+  adTimer = setTimeout(async () => {
+    if (!adRunning) return;
 
-      document.removeEventListener("visibilitychange", handler);
-      adRunning = false;
+    // ✅ Reward
+    watched += 1;
+    balance += 50;
 
-      if(spent < 15){
-        status.innerText = "❌ ১৫ সেকেন্ড পূর্ণ হয়নি";
-        return;
-      }
+    await updateDoc(userRef, {
+      watched: watched,
+      balance: balance
+    });
 
-      // ✅ Reward
-      watched += 1;
-      balance += 50;
+    watchedEl.innerText = watched;
+    balanceEl.innerText = balance;
+    document.getElementById("pbalance").innerText = balance;
+    bar.style.width = (watched / 50 * 100) + "%";
 
-      await updateDoc(userRef,{
-        watched: watched,
-        balance: balance
-      });
-
-      watchedEl.innerText = watched;
-      balanceEl.innerText = balance;
-      document.getElementById("pbalance").innerText = balance;
-      bar.style.width = (watched / 50 * 100) + "%";
-
-      status.innerText = "✅ ৫০ কয়েন যোগ হয়েছে";
-    }
-  });
+    status.innerText = "✅ ৫০ টোকেন যোগ হয়েছে";
+    adRunning = false;
+  }, 15000);
 };
+
 </script>
 
 
