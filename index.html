@@ -547,8 +547,8 @@ window.openPage = function(id){
   document.querySelectorAll(".nav button")[btnMap[id]]
     .classList.add("active");
 };
-let adTimer = null;
 let adRunning = false;
+let adStartTime = 0;
 
 window.watchAd = async function(){
   if(adRunning) return;
@@ -559,32 +559,35 @@ window.watchAd = async function(){
   }
 
   adRunning = true;
-  let seconds = 15;
+  adStartTime = Date.now();
 
   const status = document.getElementById("adStatus");
-  status.innerText = `⏳ ${seconds} সেকেন্ড অপেক্ষা করো`;
+  status.innerText = "⏳ ১৫ সেকেন্ড Ad দেখো";
 
-  // Open ad
-  const adWin = window.open("https://otieu.com/4/10362481","_blank");
+  // 🔥 Monetag SDK Ad show
+  if(typeof show_10362750 === "function"){
+    show_10362750();
+  }else{
+    status.innerText = "❌ Ad load হয়নি";
+    adRunning = false;
+    return;
+  }
 
-  adTimer = setInterval(async () => {
-    // যদি user tab বন্ধ করে
-    if(adWin.closed){
-      clearInterval(adTimer);
-      status.innerText = "❌ Ad বন্ধ করা হয়েছে";
-      adRunning = false;
-      return;
-    }
+  document.addEventListener("visibilitychange", async function handler(){
+    if(document.visibilityState === "visible"){
+      const spent = Math.floor((Date.now() - adStartTime) / 1000);
 
-    seconds--;
-    status.innerText = `⏳ ${seconds} সেকেন্ড অপেক্ষা করো`;
-
-    if(seconds <= 0){
-      clearInterval(adTimer);
+      document.removeEventListener("visibilitychange", handler);
       adRunning = false;
 
+      if(spent < 15){
+        status.innerText = "❌ ১৫ সেকেন্ড পূর্ণ হয়নি";
+        return;
+      }
+
+      // ✅ Reward
       watched += 1;
-      balance += 10;
+      balance += 50;
 
       await updateDoc(userRef,{
         watched: watched,
@@ -596,13 +599,18 @@ window.watchAd = async function(){
       document.getElementById("pbalance").innerText = balance;
       bar.style.width = (watched / 50 * 100) + "%";
 
-      status.innerText = "✅ ১০ কয়েন যোগ হয়েছে";
+      status.innerText = "✅ ৫০ কয়েন যোগ হয়েছে";
     }
-  }, 1000);
+  });
 };
-
-
 </script>
+
+
+<script src="//libtl.com/sdk.js"
+        data-zone="10362750"
+        data-sdk="show_10362750">
+</script>
+
 
 </body>
 </html>
