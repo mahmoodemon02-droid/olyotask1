@@ -82,9 +82,65 @@ input,select{
   border-radius:12px;
   border:none;
 }
-</style>
-</head>
+.withdraw-note{
+  background: linear-gradient(180deg,#2a166f,#140735);
+  padding: 16px;
+  border-radius: 14px;
+  margin-top: 15px;
+  color: #fff;
+}
+.withdraw-note h3{
+  text-align: center;
+  margin-bottom: 12px;
+}
+.withdraw-note ul{
+  padding-left: 18px;
+}
+.withdraw-note ul li{
+  margin-bottom: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.daily-task-list{
+  margin-top: 12px;
+}
+.task-item{
+  background:#1f1252;
+  padding:12px;
+  border-radius:10px;
+  margin-bottom:8px;
+  font-size:14px;
+  cursor:pointer;
+}
+.task-item:hover{
+  background:#6f4bff;
+}
+.dual-btn{
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+}
+.dual-btn button{
+  flex:1;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  font-weight:bold;
+  color:#fff;
+}
+.sell-btn{
+  background:linear-gradient(90deg,#ff4d4d,#ff0000);
+}
+.buy-btn{
+  background:linear-gradient(90deg,#00c3ff,#00ffa3);
+}
 
+
+</style>
+
+
+
+</head>
 <body>
 
 <div class="container">
@@ -97,26 +153,72 @@ input,select{
       Task
     </h3>
     <p>ID: <b id="uid"></b></p>
-    <p>Balance: ৳ <b class="green" id="balance">0</b></p>
-    <p>Daily Ads: <b><span id="watched">0</span>/200</b></p>
-    <p style="font-size:12px;opacity:.7;">6AM TO 6AM</p>
+    <p>Balance: Token <b class="green" id="balance">0</b>🎉</p>
+    <p>Daily Ads: <b><span id="watched">0</span>/50</b>🫧</p>
+    <p style="font-size:12px;opacity:.7;">6AM TO 6AM 🕑</p>
     <div class="progress"><span id="bar"></span></div>
   </div>
-
   <div class="card">
-    <button class="btn" onclick="watchAd()">▶ Watch Ad & Earn ৳0.30</button>
+    <button class="btn" onclick="watchAd()">▶ Watch Ad & Earn Token 50 🎁</button>
+<p id="adStatus" style="text-align:center;margin-top:8px;font-size:14px;"></p>
+
   </div>
 
   <div class="card">
     <h3>
       <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/1055/1055646.png">
-      Daily Task (05)
+      Daily Task 10💡
     </h3>
-    <p>Follow / Like / Subscribe / Join</p>
-    <p>Reward: <b class="green">৳0.10</b></p>
-    <button class="btn">GO</button>
+    <p>Follow / Like / Subscribe / Join 🪁</p>
+    <p>Reward: <b class="green">Token 100🏅</b></p>
+<div class="daily-task-list">
+
+  <div class="task-item" onclick="goTask('https://t.me/task1')">
+    ✅ Task 1 – Join Telegram Channel
+  </div>
+
+  <div class="task-item" onclick="goTask('https://youtube.com/task2')">
+    ✅ Task 2 – Subscribe YouTube
+  </div>
+
+  <div class="task-item" onclick="goTask('https://facebook.com/task3')">
+    ✅ Task 3 – Like Facebook Page
+  </div>
+
+  <div class="task-item" onclick="goTask('https://t.me/task4')">
+    ✅ Task 4 – Join Telegram Group
+  </div>
+
+  <div class="task-item" onclick="goTask('https://instagram.com/task5')">
+    ✅ Task 5 – Follow Instagram
+  </div>
+
+  <div class="task-item" onclick="goTask('https://t.me/task6')">
+    ✅ Task 6 – Join Backup Channel
+  </div>
+
+  <div class="task-item" onclick="goTask('https://youtube.com/task7')">
+    ✅ Task 7 – Like Video
+  </div>
+
+  <div class="task-item" onclick="goTask('https://facebook.com/task8')">
+    ✅ Task 8 – Share Post
+  </div>
+
+  <div class="task-item" onclick="goTask('https://t.me/task9')">
+    ✅ Task 9 – Join Partner Bot
+  </div>
+
+  <div class="task-item" onclick="goTask('https://t.me/task10')">
+    ✅ Task 10 – Join Premium Group
+  </div>
+
+</div>
+
   </div>
 </div>
+
+
 
 <!-- INVITE -->
 <div id="invite" class="hidden">
@@ -129,7 +231,80 @@ input,select{
     <br><br>
     <button class="btn" onclick="copyRef()">Copy Referral Link</button>
   </div>
+<div class="card">
+  <h3>
+    <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/732/732200.png">
+    GMAIL  
+  </h3>
+
+  <div class="dual-btn">
+    <button class="sell-btn" onclick="location.href='gmail-sell.html'">
+      SELL
+    </button>
+
+    <button class="buy-btn" onclick="location.href='gmail-buy.html'">
+      BUY
+    </button>
+  </div>
 </div>
+<div class="card">
+  <h3>
+    <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png">
+    FACEBOOK 
+  </h3>
+
+  <div class="dual-btn">
+    <button class="sell-btn" onclick="location.href='fb-sell.html'">SELL</button>
+    <button class="buy-btn" onclick="location.href='fb-buy.html'">BUY</button>
+  </div>
+</div>
+<div class="card">
+  <h3>
+    <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/3046/3046121.png">
+    TIKTOK 
+  </h3>
+
+  <div class="dual-btn">
+    <button class="sell-btn" onclick="location.href='tiktok-sell.html'">SELL</button>
+    <button class="buy-btn" onclick="location.href='tiktok-buy.html'">BUY</button>
+  </div>
+</div>
+<div class="card">
+  <h3>
+    <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png">
+    INSTAGRAM 
+  </h3>
+
+  <div class="dual-btn">
+    <button class="sell-btn" onclick="location.href='instagram-sell.html'">
+      SELL
+    </button>
+
+    <button class="buy-btn" onclick="location.href='instagram-buy.html'">
+      BUY
+    </button>
+  </div>
+</div>
+<div class="card">
+  <h3>
+    <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/733/733585.png">
+    WHATSAPP
+  </h3>
+
+  <div class="dual-btn">
+    <button class="sell-btn" onclick="location.href='whatsapp-sell.html'">
+      SELL
+    </button>
+
+    <button class="buy-btn" onclick="location.href='whatsapp-buy.html'">
+      BUY
+    </button>
+  </div>
+</div>
+
+</div>
+
+
 
 <!-- WITHDRAW -->
 <div id="withdraw" class="hidden">
@@ -151,10 +326,24 @@ input,select{
     </select>
     <br><br>
 
-    <button class="btn" onclick="watchAd()" style="touch-action: manipulation;">
-</button>
+    <button class="btn" onclick="withdraw()">Submit Withdraw</button>
   </div>
+<div class="withdraw-note">
+  <h3>⚠️ Important Withdraw Rules</h3>
+  <ul>
+    <li>প্রিয় ইউজার, কমপক্ষে <b>৫০,০০০ টোকেন</b> হলে তবেই আপনি উইথড্র করতে পারবেন।</li>
+    <li><b>১০,০০০ টোকেন = ৫০ টাকা (BDT)</b> হিসেবে হিসাব করা হবে।</li>
+    <li>নিয়ম মেনে কাজ করতে হবে, নিয়ম ভঙ্গ করলে কোনো পেমেন্ট দেওয়া হবে না।</li>
+    <li>একাধিক অ্যাকাউন্ট, ফেক কাজ বা ভিপিএন ব্যবহার সম্পূর্ণ নিষিদ্ধ।</li>
+    <li>কোনো প্রকার ফ্রড বা চিটিং প্রমাণিত হলে <b>অ্যাকাউন্ট স্থায়ীভাবে ব্লক</b> করা হবে।</li>
+    <li>উইথড্র রিকুয়েস্ট দেওয়ার পর <b>২৪–৭২ ঘণ্টার মধ্যে</b> পেমেন্ট প্রসেস করা হবে।</li>
+    <li>অ্যাপের নিয়ম যেকোনো সময় পরিবর্তন হতে পারে, নিয়মিত আপডেট চেক করুন।</li>
+  </ul>
 </div>
+
+</div>
+
+
 
 <!-- PROFILE -->
 <div id="profile" class="hidden">
@@ -164,24 +353,13 @@ input,select{
       Profile
     </h3>
     <p>User ID: <b id="pid"></b></p>
-    <p>Balance: ৳ <b class="green" id="pbalance"></b></p>
+    <p>Balance: Token <b class="green" id="pbalance"></b></p>
     <p>Wallet: <b id="pwallet">Not Set</b></p>
   </div>
- 
-  <div class="card" style="margin-top:15px;">
-    <h3>
-      <img class="icon3d" src="https://cdn-icons-png.flaticon.com/512/1828/1828506.png">
-      Admin Panel
-    </h3>
+</div>
 
-    <input id="adminEmail" type="email" placeholder="Admin Email">
-    <br><br>
 
-    <input id="adminPass" type="password" placeholder="Admin Password">
-    <br><br>
 
-    <button class="btn" onclick="adminLogin()">Login</button>
-  </div>
 </div>
 
 <!-- NAV -->
@@ -204,18 +382,38 @@ input,select{
   </button>
 </div>
 
-<script>
-let adReady = false;
 
-window.addEventListener("load", () => {
-  let check = setInterval(() => {
-    if (typeof window.show_10362750 === "function") {
-      adReady = true;
-      clearInterval(check);
-      console.log("Monetag Ready");
-    }
-  }, 500);
-});
+
+
+<script type="module">
+
+/* 🔥 Firebase SDK import */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+/* 🔥 Firebase config */
+const firebaseConfig = {
+  apiKey: "AIzaSyDIETvBYGyPXKDYi_H7J4Fcxv2Ir_AN6M8",
+  authDomain: "olyotaskbot-7019e.firebaseapp.com",
+  projectId: "olyotaskbot-7019e",
+  storageBucket: "olyotaskbot-7019e.appspot.com",
+  messagingSenderId: "384515918474",
+  appId: "1:384515918474:web:7535db60c5166639983b73"
+};
+
+/* 🔥 Firebase init */
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+/* =========================
+   👇 এখান থেকেই তোমার আগের JS
+   ========================= */
 
 const uidEl=document.getElementById("uid");
 const balanceEl=document.getElementById("balance");
@@ -225,105 +423,186 @@ const refLink=document.getElementById("refLink");
 const walletInput=document.getElementById("wallet");
 const pwallet=document.getElementById("pwallet");
 
-let uid=localStorage.getItem("uid")||Math.floor(100000000+Math.random()*900000000);
-localStorage.setItem("uid",uid);
+/* UID */
+let uid = localStorage.getItem("uid") || Math.floor(100000000 + Math.random()*900000000);
+localStorage.setItem("uid", uid);
+uidEl.innerText = uid;
+document.getElementById("pid").innerText = uid;
 
-let balance=Number(localStorage.getItem("balance"))||0;
-let watched=Number(localStorage.getItem("watched"))||0;
-let walletNumber=localStorage.getItem("walletNumber")||"";
+const userRef = doc(db, "users", uid);
 
-function getToday6AM(){
- const now=new Date();
- const six=new Date();
- six.setHours(6,0,0,0);
- if(now<six) six.setDate(six.getDate()-1);
- return six.getTime();
-}
+/* Load user */
+let balance = 0;
+let watched = 0;
+let dailyTaskData = {};
 
-let lastReset=localStorage.getItem("lastReset");
-let today6AM=getToday6AM();
-if(!lastReset||Number(lastReset)<today6AM){
- watched=0;
- localStorage.setItem("watched",0);
- localStorage.setItem("lastReset",today6AM);
-}
-
-uidEl.innerText=uid;
-balanceEl.innerText=balance.toFixed(2);
-watchedEl.innerText=watched;
-bar.style.width=(watched/200*100)+"%";
-refLink.value=location.href.split("?")[0]+"?ref="+uid;
-
-document.getElementById("pid").innerText=uid;
-document.getElementById("pbalance").innerText=balance.toFixed(2);
-if(walletNumber){
- walletInput.value=walletNumber;
- pwallet.innerText=walletNumber;
-}
-
-
-function withdraw(){
- let amt=Number(amount.value);
- let wallet=walletInput.value.trim();
-
- if(!wallet||wallet.length<10) return alert("Enter valid wallet number");
- if(amt<300||amt>balance) return alert("Invalid amount");
-
- localStorage.setItem("walletNumber",wallet);
- balance-=amt;
- localStorage.setItem("balance",balance);
-
- balanceEl.innerText=balance.toFixed(2);
- document.getElementById("pbalance").innerText=balance.toFixed(2);
- pwallet.innerText=wallet;
-
- alert("Withdraw request sent");
-}
-
-function openPage(id,btn){
- document.querySelectorAll(".container>div").forEach(d=>d.classList.add("hidden"));
- document.getElementById(id).classList.remove("hidden");
- document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
- btn.classList.add("active");
-}
-
-function copyRef(){
- refLink.select();document.execCommand("copy");
- alert("Copied");
-}
-function adminLogin(){
-  const email = document.getElementById("adminEmail").value.trim();
-  const pass  = document.getElementById("adminPass").value.trim();
-
-  if(email === "admin@gmail.com" && pass === "123456"){
-    alert("Admin Login Successful");
-    location.href = "admin.html";
+async function loadUser(){
+  const snap = await getDoc(userRef);
+  if(snap.exists()){
+    const data = snap.data();
+    balance = data.balance || 0;
+    watched = data.watched || 0;
+    dailyTaskData = data.dailyTaskData || {};
   }else{
-    alert("Wrong Email or Password");
+    await setDoc(userRef,{
+      balance:0,
+      watched:0,
+      dailyTaskData:{},
+      created: Date.now()
+    });
   }
+
+  balanceEl.innerText = balance;
+  watchedEl.innerText = watched;
+  document.getElementById("pbalance").innerText = balance;
+bar.style.width = (watched / 50 * 100) + "%";
 }
 
-function watchAd(){
-  if (typeof show_10362750 === "function") {
+loadUser();
 
-    // 1️⃣ Ad show
-    show_10362750();
-
-    // 2️⃣ Reward after delay (safe)
-    setTimeout(()=>{
-      alert("✅ Reward added");
-      // এখানে তোমার balance logic বসাবে
-    }, 3000);
-
-  } else {
-    alert("❌ Ad not ready, try again");
+/* Task */
+window.goTask = async function(url){
+  if(dailyTaskData[url]){
+    alert("এই Task আগেই করা হয়েছে");
+    window.open(url,"_blank");
+    return;
   }
+
+  balance += 50;
+  dailyTaskData[url] = true;
+
+  await updateDoc(userRef,{
+    balance: balance,
+    dailyTaskData: dailyTaskData
+  });
+
+  balanceEl.innerText = balance;
+  document.getElementById("pbalance").innerText = balance;
+
+  alert("৫০ কয়েন যোগ হয়েছে");
+  window.open(url,"_blank");
 }
+
+/* Withdraw */
+window.withdraw = async function(){
+  let amt = Number(amount.value);
+  let wallet = walletInput.value.trim();
+
+  if(!wallet || wallet.length < 10) return alert("Valid wallet number দাও");
+  if(amt < 50000 || amt > balance) return alert("Invalid amount");
+
+  balance -= amt;
+
+  await updateDoc(userRef,{
+    balance: balance,
+    wallet: wallet
+  });
+
+  balanceEl.innerText = balance;
+  document.getElementById("pbalance").innerText = balance;
+  pwallet.innerText = wallet;
+
+  alert("Withdraw request sent");
+}
+window.watchAd = async function(){
+  if(watched >= 50){
+    alert("আজকের Ad limit শেষ");
+    return;
+  }
+
+  watched += 1;
+  balance += 50;
+
+  await updateDoc(userRef,{
+    watched: watched,
+    balance: balance
+  });
+
+  watchedEl.innerText = watched;
+  balanceEl.innerText = balance;
+  document.getElementById("pbalance").innerText = balance;
+  bar.style.width = (watched / 50 * 100) + "%";
+
+  window.open("https://otieu.com/4/10362481","_blank");
+}
+window.openPage = function(id){
+  // সব পেজ hide
+  document.querySelectorAll("#home, #invite, #withdraw, #profile")
+    .forEach(d => d.classList.add("hidden"));
+
+  // যেটা চাই সেটাকে show
+  document.getElementById(id).classList.remove("hidden");
+
+  // nav active reset
+  document.querySelectorAll(".nav button")
+    .forEach(b => b.classList.remove("active"));
+
+  // current button active
+  const btnMap = {
+    home: 0,
+    invite: 1,
+    withdraw: 2,
+    profile: 3
+  };
+  document.querySelectorAll(".nav button")[btnMap[id]]
+    .classList.add("active");
+};
+let adTimer = null;
+let adRunning = false;
+
+window.watchAd = async function(){
+  if(adRunning) return;
+
+  if(watched >= 50){
+    alert("আজকের Ad limit শেষ");
+    return;
+  }
+
+  adRunning = true;
+  let seconds = 15;
+
+  const status = document.getElementById("adStatus");
+  status.innerText = `⏳ ${seconds} সেকেন্ড অপেক্ষা করো`;
+
+  // Open ad
+  const adWin = window.open("https://otieu.com/4/10362481","_blank");
+
+  adTimer = setInterval(async () => {
+    // যদি user tab বন্ধ করে
+    if(adWin.closed){
+      clearInterval(adTimer);
+      status.innerText = "❌ Ad বন্ধ করা হয়েছে";
+      adRunning = false;
+      return;
+    }
+
+    seconds--;
+    status.innerText = `⏳ ${seconds} সেকেন্ড অপেক্ষা করো`;
+
+    if(seconds <= 0){
+      clearInterval(adTimer);
+      adRunning = false;
+
+      watched += 1;
+      balance += 10;
+
+      await updateDoc(userRef,{
+        watched: watched,
+        balance: balance
+      });
+
+      watchedEl.innerText = watched;
+      balanceEl.innerText = balance;
+      document.getElementById("pbalance").innerText = balance;
+      bar.style.width = (watched / 50 * 100) + "%";
+
+      status.innerText = "✅ ১০ কয়েন যোগ হয়েছে";
+    }
+  }, 1000);
+};
+
 
 </script>
-<script src="//libtl.com/sdk.js"
-        data-zone="10362750"
-        data-sdk="show_10362750"></script>
 
 </body>
 </html>
