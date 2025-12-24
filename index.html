@@ -561,9 +561,6 @@ window.watchAd = async function(){
   adRunning = true;
   adStartTime = Date.now();
 
-  const status = document.getElementById("adStatus");
-  status.innerText = "⏳ ১৫ সেকেন্ড Ad দেখো";
-
   // 🔥 Monetag SDK Ad show
   if(typeof show_10362750 === "function"){
     show_10362750();
