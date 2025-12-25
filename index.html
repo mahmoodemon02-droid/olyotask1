@@ -320,10 +320,10 @@ input,select{
     <input id="amount" type="number" placeholder="Enter amount">
     <br><br>
 
-    <select>
-      <option>Bkash</option>
-      <option>Nagad</option>
-    </select>
+   <select id="method">
+  <option>Bkash</option>
+  <option>Nagad</option>
+</select>
     <br><br>
 
     <button class="btn" onclick="withdraw()">Submit Withdraw</button>
@@ -394,8 +394,16 @@ import {
   doc,
   getDoc,
   setDoc,
-  updateDoc
+  updateDoc,
+  addDoc,
+  collection
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import {
+  getAuth,
+  signInAnonymously,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 /* 🔥 Firebase config */
 const firebaseConfig = {
@@ -410,6 +418,9 @@ const firebaseConfig = {
 /* 🔥 Firebase init */
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+let uid = null;
+let userRef = null;
 
 /* =========================
    👇 এখান থেকেই তোমার আগের JS
@@ -422,14 +433,85 @@ const bar=document.getElementById("bar");
 const refLink=document.getElementById("refLink");
 const walletInput=document.getElementById("wallet");
 const pwallet=document.getElementById("pwallet");
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { 
+    return;
+  }
 
-/* UID */
-let uid = localStorage.getItem("uid") || Math.floor(100000000 + Math.random()*900000000);
-localStorage.setItem("uid", uid);
-uidEl.innerText = uid;
-document.getElementById("pid").innerText = uid;
+  uid = user.uid;
 
-const userRef = doc(db, "users", uid);
+  uidEl.innerText = uid;
+  document.getElementById("pid").innerText = uid;
+
+  userRef = doc(db, "users", uid);
+const refInput = document.getElementById("refLink");
+if (refInput) {
+  refInput.value =
+    location.origin + location.pathname + "?ref=" + uid;
+}
+ 
+  try {
+    await loadUser();
+// 🔗 REAL referral apply
+const urlParams = new URLSearchParams(window.location.search);
+const refUid = urlParams.get("ref");
+
+if (refUid && refUid !== uid) {
+  const userSnap = await getDoc(userRef);
+
+  if (userSnap.exists()) {
+    const udata = userSnap.data();
+
+    // ❌ already invited → stop
+    if (!udata.invitedBy) {
+
+      // 🔒 lock invite (REAL)
+      await updateDoc(userRef, {
+        invitedBy: refUid
+      });
+
+      // 🎁 bonus to referrer
+      const refUserRef = doc(db, "users", refUid);
+      const refSnap = await getDoc(refUserRef);
+
+      if (refSnap.exists()) {
+        await updateDoc(refUserRef, {
+          balance: (refSnap.data().balance || 0) + 50
+        });
+      }
+    }
+  }
+}
+    
+  } catch (e) {
+    alert("🔥 ERROR: " + e.message);
+    console.error(e);
+  }
+});
+
+signInAnonymously(auth);
+
+
+
+window.copyRef = function () {
+  const input = document.getElementById("refLink");
+  input.removeAttribute("readonly");
+  input.select();
+  input.setSelectionRange(0, 99999); // mobile support
+  document.execCommand("copy");
+  input.setAttribute("readonly", true);
+  alert("Referral link copied!");
+};
+
+function todayStr(){
+  const d = new Date();
+  return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+}
+function getToday() {
+  const d = new Date();
+  return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
+}
+
 
 /* Load user */
 let balance = 0;
@@ -440,16 +522,30 @@ async function loadUser(){
   const snap = await getDoc(userRef);
   if(snap.exists()){
     const data = snap.data();
-    balance = data.balance || 0;
-    watched = data.watched || 0;
-    dailyTaskData = data.dailyTaskData || {};
+balance = data.balance || 0;
+dailyTaskData = data.dailyTaskData || {};
+
+    const today = getToday();
+
+if (data.adDate !== today) {
+  watched = 0;
+
+  await updateDoc(userRef, {
+    watchedToday: 0,
+    adDate: today
+  });
+} else {
+  watched = data.watchedToday || 0;
+}
+
   }else{
     await setDoc(userRef,{
-      balance:0,
-      watched:0,
-      dailyTaskData:{},
-      created: Date.now()
-    });
+  balance: 0,
+  watchedToday: 0,
+  adDate: getToday(),
+  dailyTaskData: {},
+  created: Date.now()
+});
   }
 
   balanceEl.innerText = balance;
@@ -458,7 +554,6 @@ async function loadUser(){
 bar.style.width = (watched / 50 * 100) + "%";
 }
 
-loadUser();
 
 /* Task */
 window.goTask = async function(url){
@@ -468,7 +563,7 @@ window.goTask = async function(url){
     return;
   }
 
-  balance += 50;
+  balance += 100;
   dailyTaskData[url] = true;
 
   await updateDoc(userRef,{
@@ -479,65 +574,49 @@ window.goTask = async function(url){
   balanceEl.innerText = balance;
   document.getElementById("pbalance").innerText = balance;
 
-  alert("৫০ কয়েন যোগ হয়েছে");
+  alert("100 কয়েন যোগ হয়েছে");
   window.open(url,"_blank");
 }
-
-/* Withdraw */
-window.withdraw = async function(){
-  let amt = Number(amount.value);
-  let wallet = walletInput.value.trim();
-
-  if(!wallet || wallet.length < 10) return alert("Valid wallet number দাও");
-  if(amt < 50000 || amt > balance) return alert("Invalid amount");
-
-  balance -= amt;
-
-  await updateDoc(userRef,{
-    balance: balance,
-    wallet: wallet
-  });
-
-  balanceEl.innerText = balance;
-  document.getElementById("pbalance").innerText = balance;
-  pwallet.innerText = wallet;
-
-  alert("Withdraw request sent");
+window.withdraw = async function () {
+  const amt = parseInt(document.getElementById("amount").value);
+  const wallet = document.getElementById("wallet").value;
+  const method = document.getElementById("method").value;
+if (amt < 50000) {
+  alert("Minimum withdraw 50000 token");
+  return;
 }
-window.watchAd = async function(){
-  if(watched >= 50){
-    alert("আজকের Ad limit শেষ");
+
+  if (amt > balance) {
+    alert("Balance কম");
     return;
   }
 
-  watched += 1;
-  balance += 50;
+  if (!wallet) {
+    alert("Wallet নাম্বার দিন");
+    return;
+  }
 
-  await updateDoc(userRef,{
-    watched: watched,
-    balance: balance
+  await addDoc(collection(db, "withdraws"), {
+    uid: uid,
+    amount: amt,
+    wallet: wallet,
+    method: method,
+    status: "pending",
+    time: Date.now()
   });
 
-  watchedEl.innerText = watched;
-  balanceEl.innerText = balance;
-  document.getElementById("pbalance").innerText = balance;
-  bar.style.width = (watched / 50 * 100) + "%";
+  alert("Withdraw request sent (pending approval)");
+};
 
-  window.open("https://otieu.com/4/10362481","_blank");
-}
 window.openPage = function(id){
-  // সব পেজ hide
   document.querySelectorAll("#home, #invite, #withdraw, #profile")
     .forEach(d => d.classList.add("hidden"));
 
-  // যেটা চাই সেটাকে show
   document.getElementById(id).classList.remove("hidden");
 
-  // nav active reset
   document.querySelectorAll(".nav button")
     .forEach(b => b.classList.remove("active"));
 
-  // current button active
   const btnMap = {
     home: 0,
     invite: 1,
@@ -547,14 +626,20 @@ window.openPage = function(id){
   document.querySelectorAll(".nav button")[btnMap[id]]
     .classList.add("active");
 };
+
 let adRunning = false;
 let adTimer = null;
 
 window.watchAd = async function () {
+if (watched >= 50) {
+  alert("আজকের Ad limit শেষ");
+  return;
+}
+
   if (adRunning) return;
 
-  if (watched >= 50) {
-    alert("আজকের Ad limit শেষ");
+  if (!userRef) {
+    alert("User not ready");
     return;
   }
 
@@ -562,9 +647,7 @@ window.watchAd = async function () {
   const status = document.getElementById("adStatus");
   status.innerText = "⏳ ১৫ সেকেন্ড Ad দেখো";
 
-  const startTime = Date.now();
-
-  // 🔥 Show Monetag Ad
+  // 🔥 Show ad
   if (typeof show_10362750 === "function") {
     show_10362750();
   } else {
@@ -573,18 +656,28 @@ window.watchAd = async function () {
     return;
   }
 
-  // ⏱️ FORCE timer (15s)
-  adTimer = setTimeout(async () => {
-    if (!adRunning) return;
+  // ⏱️ 15 sec wait
+  setTimeout(async () => {
+    const today = todayStr();
+    const adKey = uid + "_" + today + "_" + (watched + 1);
+    const adRef = doc(db, "ad_logs", adKey);
 
-    // ✅ Reward
+    const snap = await getDoc(adRef);
+    if (snap.exists()) {
+      status.innerText = "⚠️ Reward already claimed";
+      adRunning = false;
+      return;
+    }
+
+    // ✅ Give reward (REAL)
     watched += 1;
-    balance += 50;
+balance += 50;
 
-    await updateDoc(userRef, {
-      watched: watched,
-      balance: balance
-    });
+await updateDoc(userRef,{
+  watchedToday: watched,
+  adDate: getToday(),
+  balance: balance
+});
 
     watchedEl.innerText = watched;
     balanceEl.innerText = balance;
@@ -593,8 +686,12 @@ window.watchAd = async function () {
 
     status.innerText = "✅ ৫০ টোকেন যোগ হয়েছে";
     adRunning = false;
+
   }, 15000);
 };
+
+
+
 
 </script>
 
