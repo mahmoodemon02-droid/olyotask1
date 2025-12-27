@@ -89,7 +89,7 @@ const db = getFirestore(app);
 let uid = null;
 let balance = 0;
 let userRef = null;
-const PRICE = 20; // 🔥 এখানেই দাম বাড়ানো/কমানো
+const PRICE = 20; // 🔥 এখানেই দাম কমাবে/বাড়াবে
 
 /* ---------- AUTH ---------- */
 onAuthStateChanged(auth, async (user) => {
@@ -109,7 +109,7 @@ onAuthStateChanged(auth, async (user) => {
   loadFacebooks();
 });
 
-/* ---------- LOAD FB ---------- */
+/* ---------- LOAD FACEBOOK ---------- */
 async function loadFacebooks() {
   const q = query(
     collection(db, "facebook_stock"),
@@ -128,7 +128,7 @@ async function loadFacebooks() {
 
   snap.forEach(docu => {
     const d = docu.data();
-    const masked = d.email.substring(0,3) + "****";
+    const masked = d.login.substring(0,3) + "****";
 
     const div = document.createElement("div");
     div.className = "item";
@@ -140,7 +140,7 @@ async function loadFacebooks() {
   });
 }
 
-/* ---------- BUY FB ---------- */
+/* ---------- BUY FACEBOOK ---------- */
 window.buyFB = async function (docId) {
   if (balance < PRICE) {
     alert("পর্যাপ্ত ব্যালেন্স নেই");
@@ -170,7 +170,7 @@ window.buyFB = async function (docId) {
   const box = document.getElementById("resultBox");
   box.style.display = "block";
   box.innerHTML = `
-    <b>Email:</b> ${snap.data().email}<br>
+    <b>Login:</b> ${snap.data().login}<br>
     <b>Password:</b> ${snap.data().pass}
   `;
 
