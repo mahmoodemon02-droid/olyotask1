@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<title>Gmail Buy</title>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(180deg,#12002b,#1d0040);
+  color:#fff;
+}
+.header{padding:16px;font-size:22px;font-weight:bold}
+.notice{
+  background:#3a1b6b;margin:12px;padding:12px;border-radius:10px;font-size:14px
+}
+.list{margin:12px}
+.item{
+  display:flex;justify-content:space-between;align-items:center;
+  background:#2a0d4f;padding:14px;border-radius:12px;margin-bottom:10px
+}
+.buyBtn{
+  background:#00e6a7;color:#000;border:none;
+  padding:8px 14px;border-radius:20px;font-weight:bold;cursor:pointer
+}
+.result{
+  margin:12px;background:#3a1b6b;padding:14px;border-radius:12px;display:none
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">GMAIL BUY</div>
+
+<div class="notice">
+  প্রতি Gmail কিনতে <b>৳10</b> কাটা হবে
+</div>
+
+<div class="list" id="gmailList"></div>
+<div class="result" id="resultBox"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+import {
+  getFirestore, collection, query, where, limit,
+  getDocs, doc, getDoc, updateDoc
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDIETvBYGyPXKDYi_H7J4Fcxv2Ir_AN6M8",
+  authDomain: "olyotaskbot-7019e.firebaseapp.com",
+  projectId: "olyotaskbot-7019e",
+  storageBucket: "olyotaskbot-7019e.firebasestorage.app",
+  messagingSenderId: "384515918474",
+  appId: "1:384515918474:web:7535db60c5166639983b73"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let uid=null, balance=0, userRef=null;
+
+onAuthStateChanged(auth, async(user)=>{
+  if(!user){ alert("Please login first"); return; }
+  uid=user.uid;
+  userRef=doc(db,"users",uid);
+  const snap=await getDoc(userRef);
+  if(snap.exists()) balance=snap.data().balance||0;
+  loadGmails();
+});
+
+async function loadGmails(){
+  const q=query(
+    collection(db,"gmail_stock"),
+    where("sold","==",false),
+    limit(10)
+  );
+  const snap=await getDocs(q);
+  const list=document.getElementById("gmailList");
+  list.innerHTML="";
+  snap.forEach(d=>{
+    const g=d.data().gmail;
+    const masked=g.substring(0,2)+"****@gmail.com";
+    list.innerHTML+=`
+      <div class="item">
+        <div>${masked}</div>
+        <button class="buyBtn" onclick="buyGmail('${d.id}')">BUY ৳10</button>
+      </div>`;
+  });
+}
+
+window.buyGmail=async function(id){
+  if(balance<10){ alert("ব্যালেন্স কম"); return; }
+  const gRef=doc(db,"gmail_stock",id);
+  const snap=await getDoc(gRef);
+  if(!snap.exists()||snap.data().sold){
+    alert("এই Gmail আর নেই"); loadGmails(); return;
+  }
+  balance-=10;
+  await updateDoc(userRef,{balance});
+  await updateDoc(gRef,{sold:true,soldTo:uid,soldAt:Date.now()});
+  const box=document.getElementById("resultBox");
+  box.style.display="block";
+  box.innerHTML=`
+    <b>Gmail:</b> ${snap.data().gmail}<br>
+    <b>Password:</b> ${snap.data().pass}
+  `;
+  alert("৳10 কাটা হয়েছে");
+  loadGmails();
+};
+</script>
+
+</body>
+</html>
