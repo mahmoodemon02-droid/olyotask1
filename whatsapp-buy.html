@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<title>WhatsApp Buy</title>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#12002b;
+  color:#fff;
+}
+.header{
+  padding:16px;
+  font-size:22px;
+  font-weight:bold;
+}
+.notice{
+  background:#3a1b6b;
+  margin:12px;
+  padding:12px;
+  border-radius:10px;
+  font-size:14px;
+}
+.item{
+  background:#2a0d4f;
+  margin:10px 12px;
+  padding:14px;
+  border-radius:12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+.buyBtn{
+  background:#00e6a7;
+  color:#000;
+  border:none;
+  padding:8px 14px;
+  border-radius:20px;
+  font-weight:bold;
+  cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">WHATSAPP BUY</div>
+
+<div class="notice">
+  প্রতি WhatsApp Account কিনতে <b>৳20</b> কাটা হবে
+</div>
+
+<div id="list"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+/* Firebase (same as others) */
+const firebaseConfig = {
+  apiKey: "AIzaSyDIETvBYGyPXKDYi_H7J4Fcxv2Ir_AN6M8",
+  authDomain: "olyotaskbot-7019e.firebaseapp.com",
+  projectId: "olyotaskbot-7019e"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const PRICE = 20;
+const uid = localStorage.getItem("uid");
+
+const list = document.getElementById("list");
+
+/* LOAD WHATSAPP STOCK */
+const snap = await getDocs(collection(db, "whatsapp_stock"));
+
+if (snap.empty) {
+  list.innerHTML = "<p style='padding:12px;'>❌ কোনো WhatsApp নেই</p>";
+}
+
+snap.forEach(docSnap => {
+  const d = docSnap.data();
+  if (d.sold === true) return;
+  if (!d.number || !d.pass) return;
+
+  const masked =
+    d.number.length > 6
+      ? d.number.slice(0,4) + "****"
+      : d.number;
+
+  const div = document.createElement("div");
+  div.className = "item";
+  div.innerHTML = `
+    <div>${masked}</div>
+    <button class="buyBtn">BUY ৳${PRICE}</button>
+  `;
+
+  div.querySelector("button").onclick = async () => {
+
+    const userRef = doc(db, "users", uid);
+    const userSnap = await getDoc(userRef);
+    const balance = userSnap.exists() ? userSnap.data().balance || 0 : 0;
+
+    if (balance < PRICE) {
+      alert("❌ পর্যাপ্ত ব্যালেন্স নেই");
+      return;
+    }
+
+    await updateDoc(userRef, {
+      balance: balance - PRICE
+    });
+
+    await updateDoc(doc(db, "whatsapp_stock", docSnap.id), {
+      sold: true,
+      soldTo: uid,
+      soldAt: Date.now()
+    });
+
+    div.innerHTML = `
+      <div>
+        <b>Number:</b> ${d.number}<br>
+        <b>Password:</b> ${d.pass}
+      </div>
+    `;
+  };
+
+  list.appendChild(div);
+});
+</script>
+
+</body>
+</html>
