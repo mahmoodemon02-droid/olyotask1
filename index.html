@@ -153,13 +153,13 @@ input,select{
       Task
     </h3>
     <p>ID: <b id="uid"></b></p>
-    <p>Balance: Token <b class="green" id="balance">0</b>🎉</p>
+    <p>Balance: TAKA <b class="green" id="balance">0</b>🎉</p>
     <p>Daily Ads: <b><span id="watched">0</span>/50</b>🫧</p>
     <p style="font-size:12px;opacity:.7;">6AM TO 6AM 🕑</p>
     <div class="progress"><span id="bar"></span></div>
   </div>
   <div class="card">
-    <button class="btn" onclick="watchAd()">▶ Watch Ad & Earn Token 50 🎁</button>
+    <button class="btn" onclick="watchAd()">▶ Watch Ad & Earn ৳ 0.10 🎁</button>
 <p id="adStatus" style="text-align:center;margin-top:8px;font-size:14px;"></p>
 
   </div>
@@ -170,7 +170,7 @@ input,select{
       Daily Task 10💡
     </h3>
     <p>Follow / Like / Subscribe / Join 🪁</p>
-    <p>Reward: <b class="green">Token 100🏅</b></p>
+    <p>Reward: <b class="green">৳ 0.20🏅</b></p>
 <div class="daily-task-list">
 
   <div class="task-item" onclick="goTask('https://t.me/task1')">
@@ -330,15 +330,14 @@ input,select{
   </div>
 <div class="withdraw-note">
   <h3>⚠️ Important Withdraw Rules</h3>
-  <ul>
-    <li>প্রিয় ইউজার, কমপক্ষে <b>৫০,০০০ টোকেন</b> হলে তবেই আপনি উইথড্র করতে পারবেন।</li>
-    <li><b>১০,০০০ টোকেন = ৫০ টাকা (BDT)</b> হিসেবে হিসাব করা হবে।</li>
-    <li>নিয়ম মেনে কাজ করতে হবে, নিয়ম ভঙ্গ করলে কোনো পেমেন্ট দেওয়া হবে না।</li>
-    <li>একাধিক অ্যাকাউন্ট, ফেক কাজ বা ভিপিএন ব্যবহার সম্পূর্ণ নিষিদ্ধ।</li>
-    <li>কোনো প্রকার ফ্রড বা চিটিং প্রমাণিত হলে <b>অ্যাকাউন্ট স্থায়ীভাবে ব্লক</b> করা হবে।</li>
-    <li>উইথড্র রিকুয়েস্ট দেওয়ার পর <b>২৪–৭২ ঘণ্টার মধ্যে</b> পেমেন্ট প্রসেস করা হবে।</li>
-    <li>অ্যাপের নিয়ম যেকোনো সময় পরিবর্তন হতে পারে, নিয়মিত আপডেট চেক করুন।</li>
-  </ul>
+<li>প্রিয় ইউজার, কমপক্ষে <b>৳১০০ (BDT)</b> হলে তবেই আপনি উইথড্র করতে পারবেন।</li>
+<li>আপনার সকল আয় <b>বাংলাদেশি টাকা (BDT)</b> হিসেবেই গণনা করা হবে।</li>
+<li>নিয়ম মেনে কাজ করতে হবে, নিয়ম ভঙ্গ করলে কোনো পেমেন্ট দেওয়া হবে না।</li>
+<li>একাধিক অ্যাকাউন্ট, ফেক কাজ বা ভিপিএন ব্যবহার সম্পূর্ণ নিষিদ্ধ।</li>
+<li>কোনো প্রকার ফ্রড বা চিটিং প্রমাণিত হলে <b>অ্যাকাউন্ট স্থায়ীভাবে ব্লক</b> করা হবে।</li>
+<li>উইথড্র রিকুয়েস্ট দেওয়ার পর <b>২৪–৭২ ঘণ্টার মধ্যে</b> পেমেন্ট প্রসেস করা হবে।</li>
+<li>অ্যাপের নিয়ম যেকোনো সময় পরিবর্তন হতে পারে, নিয়মিত আপডেট চেক করুন।</li>
+
 </div>
 
 </div>
@@ -353,7 +352,7 @@ input,select{
       Profile
     </h3>
     <p>User ID: <b id="pid"></b></p>
-    <p>Balance: Token <b class="green" id="pbalance"></b></p>
+    <p>Balance: TAKA <b class="green" id="pbalance"></b></p>
     <p>Wallet: <b id="pwallet">Not Set</b></p>
   </div>
 </div>
@@ -476,7 +475,7 @@ if (refUid && refUid !== uid) {
 
       if (refSnap.exists()) {
         await updateDoc(refUserRef, {
-          balance: (refSnap.data().balance || 0) + 50
+          balance: (refSnap.data().balance || 0) + 5
         });
       }
     }
@@ -563,7 +562,7 @@ window.goTask = async function(url){
     return;
   }
 
-  balance += 100;
+  balance += 0.20;
   dailyTaskData[url] = true;
 
   await updateDoc(userRef,{
@@ -574,15 +573,15 @@ window.goTask = async function(url){
   balanceEl.innerText = balance;
   document.getElementById("pbalance").innerText = balance;
 
-  alert("100 কয়েন যোগ হয়েছে");
+  alert("0.20 টাকা যোগ হয়েছে");
   window.open(url,"_blank");
 }
 window.withdraw = async function () {
   const amt = parseInt(document.getElementById("amount").value);
   const wallet = document.getElementById("wallet").value;
   const method = document.getElementById("method").value;
-if (amt < 50000) {
-  alert("Minimum withdraw 50000 token");
+if (amt < 100) {
+  alert("Minimum withdraw 100 taka");
   return;
 }
 
@@ -671,7 +670,7 @@ if (watched >= 50) {
 
     // ✅ Give reward (REAL)
     watched += 1;
-balance += 50;
+balance += 0.10;
 
 await updateDoc(userRef,{
   watchedToday: watched,
@@ -684,7 +683,7 @@ await updateDoc(userRef,{
     document.getElementById("pbalance").innerText = balance;
     bar.style.width = (watched / 50 * 100) + "%";
 
-    status.innerText = "✅ ৫০ টোকেন যোগ হয়েছে";
+    status.innerText = "✅ 0.10 টাকা যোগ হয়েছে";
     adRunning = false;
 
   }, 15000);
