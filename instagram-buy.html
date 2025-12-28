@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -63,7 +64,7 @@ body{
 <div id="resultBox" class="result"></div>
 
 <script type="module">
-/* ---------- IMPORT ---------- */
+/* ========= FIREBASE IMPORT ========= */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 import {
@@ -71,7 +72,7 @@ import {
   getDocs, doc, getDoc, updateDoc
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-/* ---------- FIREBASE CONFIG ---------- */
+/* ========= FIREBASE CONFIG ========= */
 const firebaseConfig = {
   apiKey: "AIzaSyDIETvBYGyPXKDYi_H7J4Fcxv2Ir_AN6M8",
   authDomain: "olyotaskbot-7019e.firebaseapp.com",
@@ -81,21 +82,21 @@ const firebaseConfig = {
   appId: "1:384515918474:web:7535db60c5166639983b73"
 };
 
-/* ---------- INIT ---------- */
+/* ========= INIT ========= */
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
 let uid = "";
 let balance = 0;
-let userRef = null;
 let userEmail = "";
 let userPhone = "";
+let userRef = null;
 
-/* ---------- AUTH CHECK ---------- */
+/* ========= AUTH CHECK ========= */
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
-    alert("Please login first");
+    alert("আগে লগইন করো");
     return;
   }
 
@@ -104,17 +105,16 @@ onAuthStateChanged(auth, async (user) => {
   userPhone = user.phoneNumber || "";
 
   userRef = doc(db, "users", uid);
-
-  const userSnap = await getDoc(userRef);
-  if (userSnap.exists()) {
-    balance = userSnap.data().balance || 0;
+  const uSnap = await getDoc(userRef);
+  if (uSnap.exists()) {
+    balance = uSnap.data().balance || 0;
   }
 
-  loadInstas();
+  loadInstagrams();
 });
 
-/* ---------- LOAD INSTAGRAM ---------- */
-async function loadInstas() {
+/* ========= LOAD INSTAGRAM LIST ========= */
+async function loadInstagrams() {
   const q = query(
     collection(db, "instagram_stock"),
     where("sold", "==", false),
@@ -130,22 +130,22 @@ async function loadInstas() {
     return;
   }
 
-  snap.forEach(docu => {
-    const d = docu.data();
-    const masked = d.username.substring(0,2) + "****";
+  snap.forEach(d => {
+    const data = d.data();
+    const masked = data.login.substring(0,2) + "****";
 
     const div = document.createElement("div");
     div.className = "item";
     div.innerHTML = `
       <div>${masked}</div>
-      <button class="buyBtn" onclick="buyInsta('${docu.id}')">BUY ৳15</button>
+      <button class="buyBtn" onclick="buyInsta('${d.id}')">BUY ৳15</button>
     `;
     list.appendChild(div);
   });
 }
 
-/* ---------- BUY INSTAGRAM ---------- */
-window.buyInsta = async function (docId) {
+/* ========= BUY INSTAGRAM ========= */
+window.buyInsta = async function(docId){
   if (balance < 15) {
     alert("পর্যাপ্ত ব্যালেন্স নেই");
     return;
@@ -156,7 +156,7 @@ window.buyInsta = async function (docId) {
 
   if (!snap.exists() || snap.data().sold) {
     alert("এই Instagram আর নেই");
-    loadInstas();
+    loadInstagrams();
     return;
   }
 
@@ -176,12 +176,12 @@ window.buyInsta = async function (docId) {
   const box = document.getElementById("resultBox");
   box.style.display = "block";
   box.innerHTML = `
-    <b>Username:</b> ${snap.data().username}<br>
-    <b>Password:</b> ${snap.data().password}
+    <b>Login:</b> ${snap.data().login}<br>
+    <b>Password:</b> ${snap.data().pass}
   `;
 
-  alert("৳15 কাটা হয়েছে");
-  loadInstas();
+  alert("✅ ৳15 কাটা হয়েছে");
+  loadInstagrams();
 };
 </script>
 
