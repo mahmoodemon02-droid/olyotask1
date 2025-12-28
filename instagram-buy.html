@@ -33,13 +33,20 @@ body{
   align-items:center;
 }
 .buyBtn{
-  background:#00e6a7;
+  background:#ff4dd2;
   color:#000;
   border:none;
   padding:8px 14px;
   border-radius:20px;
   font-weight:bold;
   cursor:pointer;
+}
+.result{
+  margin:12px;
+  background:#3a1b6b;
+  padding:14px;
+  border-radius:12px;
+  display:none;
 }
 </style>
 </head>
@@ -49,92 +56,133 @@ body{
 <div class="header">INSTAGRAM BUY</div>
 
 <div class="notice">
-  প্রতি Instagram Account কিনতে <b>৳30</b> কাটা হবে
+  প্রতি Instagram কিনতে <b>৳15</b> কাটা হবে
 </div>
 
-<div id="list"></div>
+<div id="instaList"></div>
+<div id="resultBox" class="result"></div>
 
 <script type="module">
+/* ---------- IMPORT ---------- */
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
 import {
-  getFirestore,
-  collection,
-  getDocs,
-  doc,
-  getDoc,
-  updateDoc
+  getFirestore, collection, query, where, limit,
+  getDocs, doc, getDoc, updateDoc
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
-/* Firebase config (same as others) */
+/* ---------- FIREBASE CONFIG ---------- */
 const firebaseConfig = {
   apiKey: "AIzaSyDIETvBYGyPXKDYi_H7J4Fcxv2Ir_AN6M8",
   authDomain: "olyotaskbot-7019e.firebaseapp.com",
-  projectId: "olyotaskbot-7019e"
+  projectId: "olyotaskbot-7019e",
+  storageBucket: "olyotaskbot-7019e.firebasestorage.app",
+  messagingSenderId: "384515918474",
+  appId: "1:384515918474:web:7535db60c5166639983b73"
 };
 
+/* ---------- INIT ---------- */
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
 
-const PRICE = 30;
-const uid = localStorage.getItem("uid");
+let uid = "";
+let balance = 0;
+let userRef = null;
+let userEmail = "";
+let userPhone = "";
 
-const list = document.getElementById("list");
+/* ---------- AUTH CHECK ---------- */
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    alert("Please login first");
+    return;
+  }
 
-/* LOAD ALL INSTAGRAM */
-const snap = await getDocs(collection(db, "instagram_stock"));
+  uid = user.uid;
+  userEmail = user.email || "";
+  userPhone = user.phoneNumber || "";
 
-if (snap.empty) {
-  list.innerHTML = "<p style='padding:12px;'>❌ কোনো Instagram নেই</p>";
+  userRef = doc(db, "users", uid);
+
+  const userSnap = await getDoc(userRef);
+  if (userSnap.exists()) {
+    balance = userSnap.data().balance || 0;
+  }
+
+  loadInstas();
+});
+
+/* ---------- LOAD INSTAGRAM ---------- */
+async function loadInstas() {
+  const q = query(
+    collection(db, "instagram_stock"),
+    where("sold", "==", false),
+    limit(10)
+  );
+
+  const snap = await getDocs(q);
+  const list = document.getElementById("instaList");
+  list.innerHTML = "";
+
+  if (snap.empty) {
+    list.innerHTML = "<p style='padding:12px;'>❌ কোনো Instagram নেই</p>";
+    return;
+  }
+
+  snap.forEach(docu => {
+    const d = docu.data();
+    const masked = d.username.substring(0,2) + "****";
+
+    const div = document.createElement("div");
+    div.className = "item";
+    div.innerHTML = `
+      <div>${masked}</div>
+      <button class="buyBtn" onclick="buyInsta('${docu.id}')">BUY ৳15</button>
+    `;
+    list.appendChild(div);
+  });
 }
 
-snap.forEach(docSnap => {
-  const d = docSnap.data();
-  if (d.sold === true) return;
-  if (!d.login || !d.pass) return;
+/* ---------- BUY INSTAGRAM ---------- */
+window.buyInsta = async function (docId) {
+  if (balance < 15) {
+    alert("পর্যাপ্ত ব্যালেন্স নেই");
+    return;
+  }
 
-  const masked =
-    d.login.length > 4
-      ? d.login.slice(0,3) + "****"
-      : d.login;
+  const iRef = doc(db, "instagram_stock", docId);
+  const snap = await getDoc(iRef);
 
-  const div = document.createElement("div");
-  div.className = "item";
-  div.innerHTML = `
-    <div>${masked}</div>
-    <button class="buyBtn">BUY ৳${PRICE}</button>
+  if (!snap.exists() || snap.data().sold) {
+    alert("এই Instagram আর নেই");
+    loadInstas();
+    return;
+  }
+
+  // balance minus
+  balance -= 15;
+  await updateDoc(userRef, { balance });
+
+  // mark sold + buyer info
+  await updateDoc(iRef, {
+    sold: true,
+    soldTo: uid,
+    buyerEmail: userEmail,
+    buyerPhone: userPhone,
+    soldAt: Date.now()
+  });
+
+  const box = document.getElementById("resultBox");
+  box.style.display = "block";
+  box.innerHTML = `
+    <b>Username:</b> ${snap.data().username}<br>
+    <b>Password:</b> ${snap.data().password}
   `;
 
-  div.querySelector("button").onclick = async () => {
-
-    const userRef = doc(db, "users", uid);
-    const userSnap = await getDoc(userRef);
-    const balance = userSnap.exists() ? userSnap.data().balance || 0 : 0;
-
-    if (balance < PRICE) {
-      alert("❌ পর্যাপ্ত ব্যালেন্স নেই");
-      return;
-    }
-
-    await updateDoc(userRef, {
-      balance: balance - PRICE
-    });
-
-    await updateDoc(doc(db, "instagram_stock", docSnap.id), {
-      sold: true,
-      soldTo: uid,
-      soldAt: Date.now()
-    });
-
-    div.innerHTML = `
-      <div>
-        <b>Login:</b> ${d.login}<br>
-        <b>Password:</b> ${d.pass}
-      </div>
-    `;
-  };
-
-  list.appendChild(div);
-});
+  alert("৳15 কাটা হয়েছে");
+  loadInstas();
+};
 </script>
 
 </body>
